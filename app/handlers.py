@@ -4,9 +4,10 @@ from enum import Enum, unique, auto
 from telegram.ext import run_async, ConversationHandler
 from telegram import Bot, Update
 
-from . import resources
 from .database import Database
+from .eolymp_parser import EOlimpParser
 from .models import *
+from . import resources
 
 
 ADMIN_IDS = list(map(int, environ['ADMIN_IDS'].split(',')))
@@ -80,3 +81,18 @@ def create_problem(bot: Bot, update: Update, args: List[str]) -> None:
     else:
         problem = Problem.create(db, int(args[0]), int(args[1]))
         update.message.reply_markdown(resources.CREATE_PROBLEM_SUCCESS % (problem.id, problem.group))
+
+
+@run_async
+def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
+    user = User.find(db, update.message.chat_id)
+    if user is None:
+        return None
+    parser = EOlimpParser(int(args[0]), user, db)
+    parser.execute()
+    if parser.errors:
+        update.message.reply_markdown(parser.errors[0])
+    else:
+        submission = parser.create_submission()
+        update.message.reply_markdown(resources.CREATE_SUBMISSION_SUCCESS %
+                                      (submission.id, submission.problem_id, submission.score))

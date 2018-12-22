@@ -26,6 +26,16 @@ WHOAMI_USER_TEXT = '''Ось, що мені відомо про тебе:
 *Username*: %s
 *Deleted at*: %s'''
 
-CREATE_PROBLEM_SUCCESS = "Успішно створено задачу з ІД %s та групою %s."
+CREATE_PROBLEM_SUCCESS = "Успішно додано задачу з ІД %s та групою %s."
 
 CREATE_PROBLEM_EXISTS = "Задача з ІД %s вже існує."
+
+CREATE_SUBMISSION_SUCCESS = "Успішно додано розв'язок з ІД %s, ІД задачі %s та балами %s."
+
+CREATE_SUBMISSION_ERROR_CANNOT_FETCH = "Не вийшло завантажити дані з e-olimp, спробуй пізніше."
+
+CREATE_SUBMISSION_ERROR_PROBLEM_NOT_FOUND = "Розв'язки для задачі за ІД %s не приймаються."
+
+CREATE_SUBMISSION_ERROR_USERNAME_INVALID = "Твій username (%s) не співпадає з username у розв'зку (%s)."
+
+CREATE_SUBMISSION_ERROR_SUBMISSION_EXISTS = "Розв'язок з ІД %s вже додано."

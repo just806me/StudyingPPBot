@@ -29,7 +29,8 @@ class Database:
                 "id"          BIGINT      PRIMARY KEY,
                 "user_id"     BIGINT      NOT NULL,
                 "problem_id"  BIGINT      NOT NULL,
-                "score"       REAL        NOT NULL
+                "score"       REAL        NOT NULL,
+                UNIQUE ("user_id", "problem_id") ON CONFLICT REPLACE
             )
         ''')
         self.commit()

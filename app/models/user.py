@@ -15,7 +15,7 @@ class User:
     @staticmethod
     def create(db: Database, id: int, name: str, username: str) -> User:
         cursor = db.cursor()
-        cursor.execute('INSERT INTO "users" ("id", "name", "username") VALUES (?, ?, ?)', (id, name, username))
+        cursor.execute('INSERT INTO "users" ("id", "name", "username") VALUES (?, ?, ?)', (id, name, username.casefold()))
         db.commit()
         return User(id, name, username)
 
