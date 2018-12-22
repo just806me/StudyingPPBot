@@ -1,13 +1,15 @@
 from os import environ
-from typing import Dict, Any
+from typing import Dict, Any, List
 from enum import Enum, unique, auto
 from telegram.ext import run_async, ConversationHandler
 from telegram import Bot, Update
 
 from . import resources
 from .database import Database
-from .models import User
+from .models import *
 
+
+ADMIN_IDS = list(map(int, environ['ADMIN_IDS'].split(',')))
 
 db = Database(environ['DATABASE'])
 
@@ -21,7 +23,7 @@ class StartConversationState(Enum):
 
 @run_async
 def sc_start(bot: Bot, update: Update) -> StartConversationState:
-    user = User.find(db, update.message.chat.id, True)
+    user = User.find(db, update.message.chat_id, True)
     if user is not None:
         update.message.reply_markdown(resources.SC_START_ERROR_TEXT)
         return ConversationHandler.END
@@ -31,7 +33,7 @@ def sc_start(bot: Bot, update: Update) -> StartConversationState:
 
 
 @run_async
-def sc_set_name(bot: Bot, update: Update, chat_data: Dict[str, Any]) -> StartConversationState:
+def sc_set_name(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
     chat_data['name'] = update.message.text.strip()
     update.message.reply_markdown(resources.SC_SET_NAME_TEXT)
     return StartConversationState.USERNAME
@@ -47,7 +49,7 @@ def sc_set_username(bot: Bot, update: Update, chat_data: Dict[str, str]) -> Star
 
 @run_async
 def sc_save_user(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
-    User.create(db, update.message.chat.id, chat_data['name'], chat_data['username'])
+    User.create(db, update.message.chat_id, chat_data['name'], chat_data['username'])
     chat_data.clear()
     update.message.reply_markdown(resources.SC_SAVE_USER_TEXT)
     return ConversationHandler.END
@@ -62,8 +64,19 @@ def sc_reset_user(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartC
 
 @run_async
 def whoami(bot: Bot, update: Update) -> None:
-    user = User.find(db, update.message.chat.id, True)
+    user = User.find(db, update.message.chat_id, True)
     if user is None:
         update.message.reply_markdown(resources.WHOAMI_NONE_TEXT)
     else:
         update.message.reply_markdown(resources.WHOAMI_USER_TEXT % (user.id, user.name, user.username, user.deleted_at))
+
+
+@run_async
+def create_problem(bot: Bot, update: Update, args: List[str]) -> None:
+    if not update.message.chat_id in ADMIN_IDS:
+        return
+    if Problem.find(db, int(args[0])) is not None:
+        update.message.reply_markdown(resources.CREATE_PROBLEM_EXISTS % int(args[0]))
+    else:
+        problem = Problem.create(db, int(args[0]), int(args[1]))
+        update.message.reply_markdown(resources.CREATE_PROBLEM_SUCCESS % (problem.id, problem.group))

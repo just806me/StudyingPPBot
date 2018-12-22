@@ -12,7 +12,7 @@ SC_SET_USERNAME_TEXT = '''Добре. Ось дані, які я отримав:
 
 Якщо все вірно - натисни 'Зберегти', щоб продовжити. Якщо виникла помилка - натисни 'Скинути', щоб розпочати знову.'''
 
-SC_SET_USERNAME_MARKUP = ReplyKeyboardMarkup([['Зберегти', 'Скинути']], one_time_keyboard=True)
+SC_SET_USERNAME_MARKUP = ReplyKeyboardMarkup([['Зберегти', 'Скинути']], one_time_keyboard=True, resize_keyboard=True)
 
 SC_SAVE_USER_TEXT = "Інформацію успішно збережено!"
 
@@ -25,3 +25,7 @@ WHOAMI_USER_TEXT = '''Ось, що мені відомо про тебе:
 *Прізвище та ім'я*: %s
 *Username*: %s
 *Deleted at*: %s'''
+
+CREATE_PROBLEM_SUCCESS = "Успішно створено задачу з ІД %s та групою %s."
+
+CREATE_PROBLEM_EXISTS = "Задача з ІД %s вже існує."
