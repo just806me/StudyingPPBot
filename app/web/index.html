@@ -1,95 +1,93 @@
 <html lang="en">
-  <head>
-    <meta charset="UTF-8">
 
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+<head>
+	<meta charset="UTF-8">
 
-    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <title>Submissions</title>
-  </head>
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-  <body>
-    <h1>Problems</h1>
+	<title>Submissions</title>
 
-    <table border="1" cellspacing="0" cellpadding="5">
-      <thead>
-        <tr>
-          <th>ID</th>
+	<style>
+		table {
+			border-collapse: collapse;
+			margin-bottom: 32px;
+		}
 
-          <th>Group</th>
-        </tr>
-      </thead>
+		table,
+		td {
+			border: 1px solid black;
+		}
 
-      <tbody>
-        {% for problem in problems %}
-          <tr>
-            <td>{{ problem.id }}</td>
+		th {
+			border: 2px solid black;
+			padding: 3px 5px;
+		}
 
-            <td>{{ problem.group }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+		td {
+			padding: 5px;
+		}
+	</style>
+</head>
 
-    <h1>Users</h1>
+<body>
+	{% for group in groups %}
+	<table>
+		<thead>
+			<tr style="text-align:center;">
+				<th rowspan="3">№<br>п/п</th>
 
-    <table border="1" cellspacing="0" cellpadding="5">
-      <thead>
-        <tr>
-          <th>ID</th>
+				<th rowspan="3">Фамилия, имя</th>
 
-          <th>Name</th>
+				<th rowspan="3">Ник на сайте e-olymp</th>
 
-          <th>Username</th>
+				<th colspan="{{ problems[group]|length * 2 }}">Задачи блок {{ group }}</th>
 
-          <th>Deleted at</th>
-        </tr>
-      </thead>
+				<th rowspan="3">Оценка блок {{ group }}</th>
+			</tr>
+			<tr>
+				{% for problem in problems[group] %}
+				<th colspan="2">{{ problem }}</th>
+				{% endfor %}
+			</tr>
+			<tr>
+				{% for problem in problems[group] %}
+				<th>балы</th>
 
-      <tbody>
-        {% for user in users %}
-          <tr>
-            <td>{{ user.id }}</td>
+				<th>поссылка</th>
+				{% endfor %}
+			</tr>
+		</thead>
 
-            <td>{{ user.name }}</td>
+		<tbody>
+			{% for user in users %}
+			<tr>
+				<td>{{ loop.index }}</td>
 
-            <td>{{ user.username }}</td>
+				<td>{{ user.name }}</td>
 
-            <td>{{ user.deleted_at }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
+				<td>{{ user.username }}</td>
 
-    <h1>Submissions</h1>
+				{% for problem in problems[group] %}
+				{% if (user.id, problem) in submissions %}
+				{% set x = submissions[(user.id, problem)] %}
+				<td><a href="https://e-olymp.com/en/submissions/{{ x[0] }}">{{ x[0] }}</a></td>
 
-    <table border="1" cellspacing="0" cellpadding="5">
-      <thead>
-        <tr>
-          <th>ID</th>
+				<td>{{ x[1] }}%</td>
+				{% else %}
+				<td></td>
 
-          <th>User ID</th>
+				<td>0%</td>
+				{% endif %}
+				{% endfor %}
 
-          <th>Problem ID</th>
+				<td>0</td>
+			</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+	{% endfor %}
+</body>
 
-          <th>Score</th>
-        </tr>
-      </thead>
-
-      <tbody>
-        {% for submission in submissions %}
-          <tr>
-            <td>{{ submission.id }}</td>
-
-            <td>{{ submission.user_id }}</td>
-
-            <td>{{ submission.problem_id }}</td>
-
-            <td>{{ submission.score }}</td>
-          </tr>
-        {% endfor %}
-      </tbody>
-    </table>
-  </body>
 </html>
