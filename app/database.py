@@ -1,11 +1,11 @@
+from os import environ
 import sqlite3
 import threading
 
 
 class Database:
-    def __init__(self, db: str) -> None:
-        self.db = db
-        self.store = threading.local()
+    def __init__(self) -> None:
+        self.thread_local = threading.local()
         self.__create_tables_if_not_exist__()
 
     def __create_tables_if_not_exist__(self) -> None:
@@ -37,10 +37,10 @@ class Database:
 
     def __connection__(self) -> sqlite3.Connection:
         try:
-            return self.store.connection
+            return self.thread_local.connection
         except AttributeError:
-            self.store.connection = sqlite3.connect(self.db)
-            return self.store.connection
+            self.thread_local.connection = sqlite3.connect(environ['DATABASE'])
+            return self.thread_local.connection
 
     def cursor(self) -> sqlite3.Cursor:
         return self.__connection__().cursor()

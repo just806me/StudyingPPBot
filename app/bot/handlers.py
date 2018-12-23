@@ -12,7 +12,7 @@ from . import resources
 
 ADMIN_IDS = list(map(int, environ['ADMIN_IDS'].split(',')))
 
-db = Database(environ['DATABASE'])
+db = Database()
 
 
 @unique
