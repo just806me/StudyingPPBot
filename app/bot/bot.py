@@ -33,4 +33,3 @@ class Bot:
 
     def start(self) -> None:
         self.updater.start_polling()
-        self.updater.idle()

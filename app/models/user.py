@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from ..database import Database
 
@@ -28,3 +28,12 @@ class User:
         cursor.execute(sql, (id,))
         values = cursor.fetchone()
         return None if values is None else User(*values)
+
+    @staticmethod
+    def all(db: Database, with_deleted: bool = False) -> List[User]:
+        sql = 'SELECT "id", "name", "username", "deleted_at" FROM "users"'
+        if not with_deleted:
+            sql += ' WHERE "deleted_at" IS NULL'
+        cursor = db.cursor()
+        cursor.execute(sql)
+        return [User(*values) for values in cursor.fetchall()]

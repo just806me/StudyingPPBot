@@ -1,0 +1,95 @@
+<html lang="en">
+  <head>
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+
+    <title>Submissions</title>
+  </head>
+
+  <body>
+    <h1>Problems</h1>
+
+    <table border="1" cellspacing="0" cellpadding="5">
+      <thead>
+        <tr>
+          <th>ID</th>
+
+          <th>Group</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for problem in problems %}
+          <tr>
+            <td>{{ problem.id }}</td>
+
+            <td>{{ problem.group }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h1>Users</h1>
+
+    <table border="1" cellspacing="0" cellpadding="5">
+      <thead>
+        <tr>
+          <th>ID</th>
+
+          <th>Name</th>
+
+          <th>Username</th>
+
+          <th>Deleted at</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for user in users %}
+          <tr>
+            <td>{{ user.id }}</td>
+
+            <td>{{ user.name }}</td>
+
+            <td>{{ user.username }}</td>
+
+            <td>{{ user.deleted_at }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+
+    <h1>Submissions</h1>
+
+    <table border="1" cellspacing="0" cellpadding="5">
+      <thead>
+        <tr>
+          <th>ID</th>
+
+          <th>User ID</th>
+
+          <th>Problem ID</th>
+
+          <th>Score</th>
+        </tr>
+      </thead>
+
+      <tbody>
+        {% for submission in submissions %}
+          <tr>
+            <td>{{ submission.id }}</td>
+
+            <td>{{ submission.user_id }}</td>
+
+            <td>{{ submission.problem_id }}</td>
+
+            <td>{{ submission.score }}</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </body>
+</html>

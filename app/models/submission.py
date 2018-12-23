@@ -1,6 +1,6 @@
 from __future__ import annotations
 from dataclasses import dataclass
-from typing import Optional
+from typing import Optional, List
 
 from ..database import Database
 
@@ -26,3 +26,9 @@ class Submission:
         cursor.execute('SELECT "id", "user_id", "problem_id", "score" FROM "submissions" WHERE id = ?', (id,))
         values = cursor.fetchone()
         return None if values is None else Submission(*values)
+
+    @staticmethod
+    def all(db: Database) -> List[Submission]:
+        cursor = db.cursor()
+        cursor.execute('SELECT "id", "user_id", "problem_id", "score" FROM "submissions" ORDER BY "user_id", "problem_id"')
+        return [Submission(*values) for values in cursor.fetchall()]
