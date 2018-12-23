@@ -21,11 +21,12 @@ class EOlimpParser:
         self.fetched = False
 
     def __fetch_json__(self) -> None:
-        response = requests.get(EOLYMP_URL % self.submission_id, headers={'X-Requested-With': 'XMLHttpRequest'})
+        response = requests.get(EOLYMP_URL % self.submission_id, headers={
+                                'X-Requested-With': 'XMLHttpRequest'})
         if not response.ok:
             return
         json = response.json()
-        self.score = json['report']['accepted'] * 100.0
+        self.score = int(round(json['report']['accepted'] * 100.0))
         self.problem_id = json['problem']['id']
         self.username = json['user']['username'].casefold()
         self.fetched = True
@@ -35,11 +36,14 @@ class EOlimpParser:
         if not self.fetched:
             self.errors.append(resources.CREATE_SUBMISSION_ERROR_CANNOT_FETCH)
         elif Problem.find(self.db, self.problem_id) is None:
-            self.errors.append(resources.CREATE_SUBMISSION_ERROR_PROBLEM_NOT_FOUND % self.problem_id)
+            self.errors.append(
+                resources.CREATE_SUBMISSION_ERROR_PROBLEM_NOT_FOUND % self.problem_id)
         elif self.user.username != self.username:
-            self.errors.append(resources.CREATE_SUBMISSION_ERROR_USERNAME_INVALID % (self.user.username, self.username))
+            self.errors.append(resources.CREATE_SUBMISSION_ERROR_USERNAME_INVALID % (
+                self.user.username, self.username))
         elif Submission.find(self.db, self.submission_id) is not None:
-            self.errors.append(resources.CREATE_SUBMISSION_ERROR_SUBMISSION_EXISTS % self.submission_id)
+            self.errors.append(
+                resources.CREATE_SUBMISSION_ERROR_SUBMISSION_EXISTS % self.submission_id)
 
     def execute(self) -> None:
         self.__fetch_json__()
