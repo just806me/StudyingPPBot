@@ -4,9 +4,9 @@ from enum import Enum, unique, auto
 from telegram.ext import run_async, ConversationHandler
 from telegram import Bot, Update
 
-from .database import Database
+from ..database import Database
+from ..models import User, Problem
 from .eolymp_parser import EOlimpParser
-from .models import *
 from . import resources
 
 
@@ -44,7 +44,7 @@ def sc_set_name(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartCon
 def sc_set_username(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
     chat_data['username'] = update.message.text.strip()
     update.message.reply_text(resources.SC_SET_USERNAME_TEXT % (chat_data['name'], chat_data['username']),
-                                  reply_markup=resources.SC_SET_USERNAME_MARKUP)
+                              reply_markup=resources.SC_SET_USERNAME_MARKUP)
     return StartConversationState.CONFIRMATION
 
 
@@ -95,4 +95,4 @@ def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
     else:
         submission = parser.create_submission()
         update.message.reply_text(resources.CREATE_SUBMISSION_SUCCESS %
-                                      (submission.id, submission.problem_id, submission.score))
+                                  (submission.id, submission.problem_id, submission.score))

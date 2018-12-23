@@ -2,8 +2,8 @@ from typing import Optional, List
 from dataclasses import dataclass
 import requests
 
-from .database import Database
-from .models import *
+from ..database import Database
+from ..models import *
 from . import resources
 
 EOLYMP_URL = 'https://www.e-olymp.com/ru/submissions/%s'
