@@ -37,26 +37,28 @@
           <tr style="text-align:center;">
             <th rowspan="3">№<br>п/п</th>
 
-            <th rowspan="3">Фамилия, имя</th>
+            <th rowspan="3">Прізвище, ім'я</th>
 
-            <th rowspan="3">Ник на сайте e-olymp</th>
+            <th rowspan="3">Нік на сайті e-olymp</th>
 
-            <th colspan="{{ problems[group]|length * 2 }}">Задачи блок {{ group }}</th>
+            <th colspan="{{ problems[group]|length * 2 }}">Задачі блок {{ group }}</th>
 
-            <th rowspan="3">Оценка блок {{ group }}</th>
+            <th rowspan="3">Оцінка блок {{ group }}</th>
           </tr>
 
           <tr>
             {% for problem in problems[group] %}
-              <th colspan="2">{{ problem }}</th>
+              <th colspan="2">
+                <a target="_blank" href="https://www.e-olymp.com/uk/problems/{{ problem.id }}">{{ problem.id }}</a>
+              </th>
             {% endfor %}
           </tr>
 
           <tr>
             {% for problem in problems[group] %}
-              <th>балы</th>
+              <th>бали</th>
 
-              <th>поссылка</th>
+              <th>розв'язок</th>
             {% endfor %}
           </tr>
         </thead>
@@ -78,7 +80,7 @@
 
                   <td>0%</td>
                 {% else %}
-                  <td><a href="https://e-olymp.com/en/submissions/{{ info[0] }}">{{ info[0] }}</a></td>
+                  <td><a target="_blank" href="https://e-olymp.com/uk/submissions/{{ info[0] }}">{{ info[0] }}</a></td>
 
                   <td>{{ info[1] }}%</td>
                 {% endif %}

@@ -6,7 +6,7 @@ from ..database import Database
 from ..models import *
 from . import resources
 
-EOLYMP_URL = 'https://www.e-olymp.com/ru/submissions/%s'
+EOLYMP_URL = 'https://www.e-olymp.com/uk/submissions/%s'
 
 
 class EOlimpParser:
