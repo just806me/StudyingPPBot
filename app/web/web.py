@@ -7,8 +7,7 @@ from ..models import *
 
 class Web:
     def __init__(self) -> None:
-        self.index_template = Environment(loader=PackageLoader(
-            'app.web', '')).get_template('index.html')
+        self.index_template = Environment(loader=PackageLoader('app.web', '')).get_template('index.html')
         self.db = Database()
 
     @expose
@@ -28,12 +27,10 @@ class Web:
         submissions = Submission.all(self.db)
         s = dict()
         for submission in submissions:
-            s[(submission.user_id, submission.problem_id)] = (
-                submission.id, submission.score)
+            s[(submission.user_id, submission.problem_id)] = (submission.id, submission.score)
 
         return self.index_template.render(groups=g, problems=p, users=users, submissions=s)
 
     def start(self) -> None:
-        config.update({'server.socket_host': environ['WEB_HOST'], 'server.socket_port': int(
-            environ['WEB_PORT'])})
+        config.update({'server.socket_host': environ['WEB_HOST'], 'server.socket_port': int(environ['WEB_PORT'])})
         quickstart(self)

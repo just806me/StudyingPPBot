@@ -1,93 +1,92 @@
 <html lang="en">
+  <head>
+    <meta charset="UTF-8">
 
-<head>
-	<meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
 
-	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Submissions</title>
 
-	<title>Submissions</title>
+    <style>
+      table {
+        border-collapse: collapse;
+        margin-bottom: 32px;
+      }
 
-	<style>
-		table {
-			border-collapse: collapse;
-			margin-bottom: 32px;
-		}
+      table,
+      td {
+        border: 1px solid black;
+      }
 
-		table,
-		td {
-			border: 1px solid black;
-		}
+      th {
+        border: 2px solid black;
+        padding: 3px 5px;
+      }
 
-		th {
-			border: 2px solid black;
-			padding: 3px 5px;
-		}
+      td {
+        padding: 5px;
+      }
+    </style>
+  </head>
 
-		td {
-			padding: 5px;
-		}
-	</style>
-</head>
+  <body>
+    {% for group in groups %}
+      <table>
+        <thead>
+          <tr style="text-align:center;">
+            <th rowspan="3">№<br>п/п</th>
 
-<body>
-	{% for group in groups %}
-	<table>
-		<thead>
-			<tr style="text-align:center;">
-				<th rowspan="3">№<br>п/п</th>
+            <th rowspan="3">Фамилия, имя</th>
 
-				<th rowspan="3">Фамилия, имя</th>
+            <th rowspan="3">Ник на сайте e-olymp</th>
 
-				<th rowspan="3">Ник на сайте e-olymp</th>
+            <th colspan="{{ problems[group]|length * 2 }}">Задачи блок {{ group }}</th>
 
-				<th colspan="{{ problems[group]|length * 2 }}">Задачи блок {{ group }}</th>
+            <th rowspan="3">Оценка блок {{ group }}</th>
+          </tr>
+          <tr>
+            {% for problem in problems[group] %}
+              <th colspan="2">{{ problem }}</th>
+            {% endfor %}
+          </tr>
+          <tr>
+            {% for problem in problems[group] %}
+              <th>балы</th>
 
-				<th rowspan="3">Оценка блок {{ group }}</th>
-			</tr>
-			<tr>
-				{% for problem in problems[group] %}
-				<th colspan="2">{{ problem }}</th>
-				{% endfor %}
-			</tr>
-			<tr>
-				{% for problem in problems[group] %}
-				<th>балы</th>
+              <th>поссылка</th>
+            {% endfor %}
+          </tr>
+        </thead>
 
-				<th>поссылка</th>
-				{% endfor %}
-			</tr>
-		</thead>
+        <tbody>
+          {% for user in users %}
+            <tr>
+              <td>{{ loop.index }}</td>
 
-		<tbody>
-			{% for user in users %}
-			<tr>
-				<td>{{ loop.index }}</td>
+              <td>{{ user.name }}</td>
 
-				<td>{{ user.name }}</td>
+              <td>{{ user.username }}</td>
 
-				<td>{{ user.username }}</td>
+              {% for problem in problems[group] %}
+                {% if (user.id, problem) in submissions %}
+                  {% set x = submissions[(user.id, problem)] %}
 
-				{% for problem in problems[group] %}
-				{% if (user.id, problem) in submissions %}
-				{% set x = submissions[(user.id, problem)] %}
-				<td><a href="https://e-olymp.com/en/submissions/{{ x[0] }}">{{ x[0] }}</a></td>
+                  <td><a href="https://e-olymp.com/en/submissions/{{ x[0] }}">{{ x[0] }}</a></td>
 
-				<td>{{ x[1] }}%</td>
-				{% else %}
-				<td></td>
+                  <td>{{ x[1] }}%</td>
+                {% else %}
+                  <td></td>
 
-				<td>0%</td>
-				{% endif %}
-				{% endfor %}
+                  <td>0%</td>
+                {% endif %}
+              {% endfor %}
 
-				<td>0</td>
-			</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-	{% endfor %}
-</body>
-
+              <td>0</td>
+            </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    {% endfor %}
+  </body>
 </html>
