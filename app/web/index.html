@@ -45,11 +45,13 @@
 
             <th rowspan="3">Оценка блок {{ group }}</th>
           </tr>
+
           <tr>
             {% for problem in problems[group] %}
               <th colspan="2">{{ problem }}</th>
             {% endfor %}
           </tr>
+
           <tr>
             {% for problem in problems[group] %}
               <th>балы</th>
@@ -69,16 +71,16 @@
               <td>{{ user.username }}</td>
 
               {% for problem in problems[group] %}
-                {% if (user.id, problem) in submissions %}
-                  {% set x = submissions[(user.id, problem)] %}
+                {% set info = submissions.get((user.id, problem.id), None) %}
 
-                  <td><a href="https://e-olymp.com/en/submissions/{{ x[0] }}">{{ x[0] }}</a></td>
-
-                  <td>{{ x[1] }}%</td>
-                {% else %}
+                {% if info is none %}
                   <td></td>
 
                   <td>0%</td>
+                {% else %}
+                  <td><a href="https://e-olymp.com/en/submissions/{{ info[0] }}">{{ info[0] }}</a></td>
+
+                  <td>{{ info[1] }}%</td>
                 {% endif %}
               {% endfor %}
 
