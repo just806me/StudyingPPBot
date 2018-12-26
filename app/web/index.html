@@ -86,7 +86,7 @@
                 {% endif %}
               {% endfor %}
 
-              <td>0</td>
+              <td>{{ marks[(user.id, group)] }}</td>
             </tr>
           {% endfor %}
         </tbody>
