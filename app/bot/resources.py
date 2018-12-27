@@ -42,6 +42,8 @@ CREATE_PROBLEM_EXISTS = "Задача з ІД %s вже існує."
 
 CREATE_SUBMISSION_SUCCESS = "Успішно додано розв'язок %s для задачі %s з %s балами."
 
+CREATE_SUBMISSION_ERROR_SYNTAX = "Необхідно виконати команду у форматі /submission id, наприклад /submission 4932458"
+
 CREATE_SUBMISSION_ERROR_CANNOT_FETCH = "Не вийшло завантажити дані з e-olimp, спробуй пізніше."
 
 CREATE_SUBMISSION_ERROR_PROBLEM_NOT_FOUND = "Розв'язки для задачі з ІД %s не приймаються."

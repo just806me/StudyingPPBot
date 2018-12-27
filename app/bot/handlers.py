@@ -90,9 +90,12 @@ def create_problem(bot: Bot, update: Update, args: List[str]) -> None:
 
 @run_async
 def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
+    if len(args) != 1:
+        update.message.reply_text(resources.CREATE_SUBMISSION_ERROR_SYNTAX)
+        return
     user = User.find(db, update.message.chat_id)
     if user is None:
-        return None
+        return
     parser = EOlimpParser(int(args[0]), user, db)
     parser.execute()
     if parser.errors:
