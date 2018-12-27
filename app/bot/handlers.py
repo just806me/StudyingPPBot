@@ -64,6 +64,11 @@ def sc_reset_user(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartC
 
 
 @run_async
+def help(bot: Bot, update: Update) -> None:
+    update.message.reply_text(resources.HELP_TEXT)
+
+
+@run_async
 def whoami(bot: Bot, update: Update) -> None:
     user = User.find(db, update.message.chat_id, True)
     if user is None:

@@ -30,6 +30,7 @@ class Bot:
         self.updater.dispatcher.add_handler(CommandHandler('whoami', handlers.whoami))
         self.updater.dispatcher.add_handler(CommandHandler('problem', handlers.create_problem, pass_args=True))
         self.updater.dispatcher.add_handler(CommandHandler('submission', handlers.create_submission, pass_args=True))
+        self.updater.dispatcher.add_handler(CommandHandler('help', handlers.help))
 
     def start(self) -> None:
         self.updater.start_polling()
