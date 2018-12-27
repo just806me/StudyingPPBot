@@ -53,4 +53,4 @@ CREATE_SUBMISSION_ERROR_USERNAME_INVALID = "Твій нік (%s) не співп
 
 CREATE_SUBMISSION_ERROR_SUBMISSION_EXISTS = "Розв'язок з ІД %s вже додано."
 
-RESULTS_TEXT = "Гарні таблички з твоїми балами та списком задач можна знайти на сайті http://studying.codelabs.site/. Быльшість чисел це посилання, щоб було легше та швидше шукати"
+RESULTS_TEXT = "Гарні таблички з твоїми балами та списком задач можна знайти на сайті http://studying.codelabs.site/. Більшість чисел це посилання, щоб було легше та швидше шукати"
