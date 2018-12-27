@@ -104,3 +104,8 @@ def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
         submission = parser.create_submission()
         update.message.reply_text(resources.CREATE_SUBMISSION_SUCCESS %
                                   (submission.id, submission.problem_id, submission.score))
+
+
+@run_async
+def results(bot: Bot, update: Update) -> None:
+    update.message.reply_text(resources.RESULTS_TEXT)
