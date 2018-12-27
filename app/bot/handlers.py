@@ -50,16 +50,16 @@ def sc_set_username(bot: Bot, update: Update, chat_data: Dict[str, str]) -> Star
 
 @run_async
 def sc_save_user(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
-    User.create(db, update.message.chat_id, chat_data['name'], chat_data['username'])
+    User.create(db, update.callback_query.message.chat_id, chat_data['name'], chat_data['username'])
     chat_data.clear()
-    update.message.reply_text(resources.SC_SAVE_USER_TEXT)
+    update.callback_query.message.edit_text(resources.SC_SAVE_USER_TEXT)
     return ConversationHandler.END
 
 
 @run_async
 def sc_reset_user(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
     chat_data.clear()
-    update.message.reply_text(resources.SC_RESRT_USER_TEXT)
+    update.callback_query.message.edit_text(resources.SC_RESET_USER_TEXT)
     return StartConversationState.NAME
 
 

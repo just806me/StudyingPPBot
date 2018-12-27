@@ -1,4 +1,4 @@
-from telegram import ReplyKeyboardMarkup
+from telegram import InlineKeyboardMarkup, InlineKeyboardButton
 
 SC_START_OK_TEXT = "Привіт! Спершу мені потрібно взнати твої дані. Надішли своє прізвище та ім'я."
 
@@ -12,11 +12,14 @@ SC_SET_USERNAME_TEXT = '''Добре. Ось дані, які я отримав:
 
 Якщо все вірно - натисни 'Зберегти', щоб продовжити. Якщо виникла помилка - натисни 'Скинути', щоб розпочати знову.'''
 
-SC_SET_USERNAME_MARKUP = ReplyKeyboardMarkup([['Зберегти', 'Скинути']], one_time_keyboard=True, resize_keyboard=True)
+SC_SET_USERNAME_MARKUP = InlineKeyboardMarkup([[
+    InlineKeyboardButton('Зберегти', callback_data='save'),
+    InlineKeyboardButton('Скинути', callback_data='reset'),
+]])
 
 SC_SAVE_USER_TEXT = "Інформацію успішно збережено!"
 
-SC_RESRT_USER_TEXT = "Надішли своє прізвище та ім'я."
+SC_RESET_USER_TEXT = "Надішли своє прізвище та ім'я."
 
 WHOAMI_NONE_TEXT = 'Мені про тебе нічого не відомо!'
 
