@@ -110,6 +110,7 @@ def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
 def results(bot: Bot, update: Update) -> None:
     update.message.reply_text(resources.RESULTS_TEXT)
 
+
 @run_async
 def broadcast(bot: Bot, update: Update, args: List[str]) -> None:
     if not update.message.chat_id in ADMIN_IDS:
@@ -122,3 +123,18 @@ def broadcast(bot: Bot, update: Update, args: List[str]) -> None:
     for user in users:
         bot.send_message(user.id, text)
     update.message.reply_text(resources.BROADCAST_SUCCESS % len(users))
+
+
+@run_async
+def unicast(bot: Bot, update: Update, args: List[str]) -> None:
+    if not update.message.chat_id in ADMIN_IDS:
+        return
+    if len(args) < 2:
+        update.message.reply_text(resources.UNICAST_ERROR_SYNTAX)
+        return
+    user = User.find(db, args[0])
+    if user is None:
+        update.message.reply_text(resources.UNICAST_ERROR_NOT_FOUND % args[0])
+        return
+    bot.send_message(user.id, update.message.text[(len(args[0]) + 9):])
+    update.message.reply_text(resources.UNICAST_SUCCESS % user.username)

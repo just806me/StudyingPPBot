@@ -53,8 +53,16 @@ CREATE_SUBMISSION_ERROR_USERNAME_INVALID = "Твій нік (%s) не співп
 
 CREATE_SUBMISSION_ERROR_SUBMISSION_EXISTS = "Розв'язок з ІД %s вже додано."
 
+CREATE_SUBMISSION_ERROR_LANGUAGE_DENY = "Мова програмування %s заборонена до використання"
+
 RESULTS_TEXT = "Гарні таблички з твоїми балами та списком задач можна знайти на сайті http://studying.codelabs.site/. Більшість чисел це посилання, щоб було легше та швидше шукати"
 
 BROADCAST_ERROR_SYNTAX = "Необхідно виконати команду у форматі /broadcast some text"
 
-BROADCAST_SUCCESS = "Надіслано повідомлення %s користувачам."
+BROADCAST_SUCCESS = "Повідомлення надіслано %s користувачам."
+
+UNICAST_ERROR_SYNTAX = "Необхідно виконати команду у форматі /unicast user_id some text"
+
+UNICAST_ERROR_NOT_FOUND = "Користувача з ІД %s не знайдено."
+
+UNICAST_SUCCESS = "Повідомлення надіслано користувачу %s."
