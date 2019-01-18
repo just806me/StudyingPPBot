@@ -32,6 +32,7 @@ class Bot:
         self.updater.dispatcher.add_handler(CommandHandler('submission', handlers.create_submission, pass_args=True))
         self.updater.dispatcher.add_handler(CommandHandler('help', handlers.help))
         self.updater.dispatcher.add_handler(CommandHandler('results', handlers.results))
+        self.updater.dispatcher.add_handler(CommandHandler('broadcast', handlers.broadcast, pass_args=True))
 
     def start(self) -> None:
         self.updater.start_polling()

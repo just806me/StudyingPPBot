@@ -109,3 +109,16 @@ def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
 @run_async
 def results(bot: Bot, update: Update) -> None:
     update.message.reply_text(resources.RESULTS_TEXT)
+
+@run_async
+def broadcast(bot: Bot, update: Update, args: List[str]) -> None:
+    if not update.message.chat_id in ADMIN_IDS:
+        return
+    if len(args) == 0:
+        update.message.reply_text(resources.BROADCAST_ERROR_SYNTAX)
+        return
+    text = update.message.text[11:]
+    users = User.all(db)
+    for user in users:
+        bot.send_message(user.id, text)
+    update.message.reply_text(resources.BROADCAST_SUCCESS % len(users))
