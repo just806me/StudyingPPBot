@@ -27,6 +27,10 @@ class EOlimpParser:
         json = response.json()
         if json['report'] is None:
             return
+        if json['compiler']['name'] != 'Judge C++':
+            self.errors.append('Must be Judge C++')
+            return
+            
         self.score = int(round(json['report']['accepted'] * 100.0))
         self.problem_id = json['problem']['id']
         self.username = json['user']['username'].casefold()
