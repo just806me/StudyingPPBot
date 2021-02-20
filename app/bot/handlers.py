@@ -1,8 +1,7 @@
 from os import environ
-from typing import Dict, Any, List
 from enum import Enum, unique, auto
-from telegram.ext import run_async, ConversationHandler
-from telegram import Bot, Update
+from telegram.ext import run_async, ConversationHandler, CallbackContext
+from telegram import Update
 
 from ..database import Database
 from ..models import User, Problem
@@ -23,7 +22,7 @@ class StartConversationState(Enum):
 
 
 @run_async
-def sc_start(bot: Bot, update: Update) -> StartConversationState:
+def sc_start(update: Update, context: CallbackContext) -> StartConversationState:
     user = User.find(db, update.message.chat_id, True)
     if user is not None:
         update.message.reply_text(resources.SC_START_ERROR_TEXT)
@@ -34,42 +33,42 @@ def sc_start(bot: Bot, update: Update) -> StartConversationState:
 
 
 @run_async
-def sc_set_name(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
-    chat_data['name'] = update.message.text.strip()
+def sc_set_name(update: Update, context: CallbackContext) -> StartConversationState:
+    context.chat_data['name'] = update.message.text.strip()
     update.message.reply_text(resources.SC_SET_NAME_TEXT)
     return StartConversationState.USERNAME
 
 
 @run_async
-def sc_set_username(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
-    chat_data['username'] = update.message.text.strip()
-    update.message.reply_text(resources.SC_SET_USERNAME_TEXT % (chat_data['name'], chat_data['username']),
-                              reply_markup=resources.SC_SET_USERNAME_MARKUP)
+def sc_set_username(update: Update, context: CallbackContext) -> StartConversationState:
+    context.chat_data['username'] = update.message.text.strip()
+    text = resources.SC_SET_USERNAME_TEXT % (context.chat_data['name'], context.chat_data['username'])
+    update.message.reply_text(text, reply_markup=resources.SC_SET_USERNAME_MARKUP)
     return StartConversationState.CONFIRMATION
 
 
 @run_async
-def sc_save_user(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
-    User.create(db, update.callback_query.message.chat_id, chat_data['name'], chat_data['username'])
-    chat_data.clear()
+def sc_save_user(update: Update, context: CallbackContext) -> StartConversationState:
+    User.create(db, update.callback_query.message.chat_id, context.chat_data['name'], context.chat_data['username'])
+    context.chat_data.clear()
     update.callback_query.message.edit_text(resources.SC_SAVE_USER_TEXT)
     return ConversationHandler.END
 
 
 @run_async
-def sc_reset_user(bot: Bot, update: Update, chat_data: Dict[str, str]) -> StartConversationState:
-    chat_data.clear()
+def sc_reset_user(update: Update, context: CallbackContext) -> StartConversationState:
+    context.chat_data.clear()
     update.callback_query.message.edit_text(resources.SC_RESET_USER_TEXT)
     return StartConversationState.NAME
 
 
 @run_async
-def help(bot: Bot, update: Update) -> None:
+def help(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(resources.HELP_TEXT)
 
 
 @run_async
-def whoami(bot: Bot, update: Update) -> None:
+def whoami(update: Update, context: CallbackContext) -> None:
     user = User.find(db, update.message.chat_id, True)
     if user is None:
         update.message.reply_text(resources.WHOAMI_NONE_TEXT)
@@ -78,25 +77,26 @@ def whoami(bot: Bot, update: Update) -> None:
 
 
 @run_async
-def create_problem(bot: Bot, update: Update, args: List[str]) -> None:
+def create_problem(update: Update, context: CallbackContext) -> None:
+    pid, pgroup = map(int, context.args)
     if not update.message.chat_id in ADMIN_IDS:
         return
-    if Problem.find(db, int(args[0])) is not None:
-        update.message.reply_text(resources.CREATE_PROBLEM_EXISTS % int(args[0]))
+    if Problem.find(db, pid) is not None:
+        update.message.reply_text(resources.CREATE_PROBLEM_EXISTS % pid)
     else:
-        problem = Problem.create(db, int(args[0]), int(args[1]))
+        problem = Problem.create(db, pid, pgroup)
         update.message.reply_text(resources.CREATE_PROBLEM_SUCCESS % (problem.id, problem.group))
 
 
 @run_async
-def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
-    if len(args) != 1:
+def create_submission(update: Update, context: CallbackContext) -> None:
+    if len(context.args) != 1:
         update.message.reply_text(resources.CREATE_SUBMISSION_ERROR_SYNTAX)
         return
     user = User.find(db, update.message.chat_id)
     if user is None:
         return
-    parser = EOlimpParser(int(args[0]), user, db)
+    parser = EOlimpParser(int(context.args[0]), user, db)
     parser.execute()
     if parser.errors:
         update.message.reply_text(parser.errors[0])
@@ -107,34 +107,35 @@ def create_submission(bot: Bot, update: Update, args: List[str]) -> None:
 
 
 @run_async
-def results(bot: Bot, update: Update) -> None:
+def results(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(resources.RESULTS_TEXT)
 
 
 @run_async
-def broadcast(bot: Bot, update: Update, args: List[str]) -> None:
+def broadcast(update: Update, context: CallbackContext) -> None:
     if not update.message.chat_id in ADMIN_IDS:
         return
-    if len(args) == 0:
+    if len(context.args) == 0:
         update.message.reply_text(resources.BROADCAST_ERROR_SYNTAX)
         return
     text = update.message.text[11:]
     users = User.all(db)
     for user in users:
-        bot.send_message(user.id, text)
+        context.bot.send_message(user.id, text)
     update.message.reply_text(resources.BROADCAST_SUCCESS % len(users))
 
 
 @run_async
-def unicast(bot: Bot, update: Update, args: List[str]) -> None:
+def unicast(update: Update, context: CallbackContext) -> None:
     if not update.message.chat_id in ADMIN_IDS:
         return
-    if len(args) < 2:
+    if len(context.args) < 2:
         update.message.reply_text(resources.UNICAST_ERROR_SYNTAX)
         return
-    user = User.find(db, args[0])
+    uid = context.args[0]
+    user = User.find(db, uid)
     if user is None:
-        update.message.reply_text(resources.UNICAST_ERROR_NOT_FOUND % args[0])
+        update.message.reply_text(resources.UNICAST_ERROR_NOT_FOUND % uid)
         return
-    bot.send_message(user.id, update.message.text[(len(args[0]) + 9):])
+    context.bot.send_message(user.id, update.message.text[(len(uid) + 9):])
     update.message.reply_text(resources.UNICAST_SUCCESS % user.username)
