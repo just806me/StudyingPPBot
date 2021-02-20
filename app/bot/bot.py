@@ -12,28 +12,28 @@ class Bot:
 
     def __register_handlers__(self) -> None:
         self.updater.dispatcher.add_handler(ConversationHandler(
-            [CommandHandler('start', handlers.sc_start)],
+            [CommandHandler('start', handlers.sc_start, run_async=True)],
             {
                 StartConversationState.NAME: [
-                    MessageHandler(Filters.text, handlers.sc_set_name)
+                    MessageHandler(Filters.text, handlers.sc_set_name, run_async=True)
                 ],
                 StartConversationState.USERNAME: [
-                    MessageHandler(Filters.text, handlers.sc_set_username)
+                    MessageHandler(Filters.text, handlers.sc_set_username, run_async=True)
                 ],
                 StartConversationState.CONFIRMATION: [
-                    CallbackQueryHandler(handlers.sc_save_user, pattern='^save$'),
-                    CallbackQueryHandler(handlers.sc_reset_user, pattern='^reset$'),
+                    CallbackQueryHandler(handlers.sc_save_user, pattern='^save$', run_async=True),
+                    CallbackQueryHandler(handlers.sc_reset_user, pattern='^reset$', run_async=True),
                 ],
             },
             [],
         ))
-        self.updater.dispatcher.add_handler(CommandHandler('whoami', handlers.whoami))
-        self.updater.dispatcher.add_handler(CommandHandler('problem', handlers.create_problem))
-        self.updater.dispatcher.add_handler(CommandHandler('submission', handlers.create_submission))
-        self.updater.dispatcher.add_handler(CommandHandler('help', handlers.help))
-        self.updater.dispatcher.add_handler(CommandHandler('results', handlers.results))
-        self.updater.dispatcher.add_handler(CommandHandler('broadcast', handlers.broadcast))
-        self.updater.dispatcher.add_handler(CommandHandler('unicast', handlers.unicast))
+        self.updater.dispatcher.add_handler(CommandHandler('whoami', handlers.whoami, run_async=True))
+        self.updater.dispatcher.add_handler(CommandHandler('problem', handlers.create_problem, run_async=True))
+        self.updater.dispatcher.add_handler(CommandHandler('submission', handlers.create_submission, run_async=True))
+        self.updater.dispatcher.add_handler(CommandHandler('help', handlers.help, run_async=True))
+        self.updater.dispatcher.add_handler(CommandHandler('results', handlers.results, run_async=True))
+        self.updater.dispatcher.add_handler(CommandHandler('broadcast', handlers.broadcast, run_async=True))
+        self.updater.dispatcher.add_handler(CommandHandler('unicast', handlers.unicast, run_async=True))
 
     def start(self) -> None:
         self.updater.start_polling()

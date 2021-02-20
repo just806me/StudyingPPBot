@@ -1,6 +1,6 @@
 from os import environ
 from enum import Enum, unique, auto
-from telegram.ext import run_async, ConversationHandler, CallbackContext
+from telegram.ext import ConversationHandler, CallbackContext
 from telegram import Update
 
 from ..database import Database
@@ -21,7 +21,6 @@ class StartConversationState(Enum):
     CONFIRMATION = auto()
 
 
-@run_async
 def sc_start(update: Update, context: CallbackContext) -> StartConversationState:
     user = User.find(db, update.message.chat_id, True)
     if user is not None:
@@ -32,14 +31,12 @@ def sc_start(update: Update, context: CallbackContext) -> StartConversationState
         return StartConversationState.NAME
 
 
-@run_async
 def sc_set_name(update: Update, context: CallbackContext) -> StartConversationState:
     context.chat_data['name'] = update.message.text.strip()
     update.message.reply_text(resources.SC_SET_NAME_TEXT)
     return StartConversationState.USERNAME
 
 
-@run_async
 def sc_set_username(update: Update, context: CallbackContext) -> StartConversationState:
     context.chat_data['username'] = update.message.text.strip()
     text = resources.SC_SET_USERNAME_TEXT % (context.chat_data['name'], context.chat_data['username'])
@@ -47,7 +44,6 @@ def sc_set_username(update: Update, context: CallbackContext) -> StartConversati
     return StartConversationState.CONFIRMATION
 
 
-@run_async
 def sc_save_user(update: Update, context: CallbackContext) -> StartConversationState:
     User.create(db, update.callback_query.message.chat_id, context.chat_data['name'], context.chat_data['username'])
     context.chat_data.clear()
@@ -55,19 +51,16 @@ def sc_save_user(update: Update, context: CallbackContext) -> StartConversationS
     return ConversationHandler.END
 
 
-@run_async
 def sc_reset_user(update: Update, context: CallbackContext) -> StartConversationState:
     context.chat_data.clear()
     update.callback_query.message.edit_text(resources.SC_RESET_USER_TEXT)
     return StartConversationState.NAME
 
 
-@run_async
 def help(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(resources.HELP_TEXT)
 
 
-@run_async
 def whoami(update: Update, context: CallbackContext) -> None:
     user = User.find(db, update.message.chat_id, True)
     if user is None:
@@ -76,7 +69,6 @@ def whoami(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(resources.WHOAMI_USER_TEXT % (user.id, user.name, user.username, user.deleted_at))
 
 
-@run_async
 def create_problem(update: Update, context: CallbackContext) -> None:
     pid, pgroup = map(int, context.args)
     if not update.message.chat_id in ADMIN_IDS:
@@ -88,7 +80,6 @@ def create_problem(update: Update, context: CallbackContext) -> None:
         update.message.reply_text(resources.CREATE_PROBLEM_SUCCESS % (problem.id, problem.group))
 
 
-@run_async
 def create_submission(update: Update, context: CallbackContext) -> None:
     if len(context.args) != 1:
         update.message.reply_text(resources.CREATE_SUBMISSION_ERROR_SYNTAX)
@@ -106,12 +97,10 @@ def create_submission(update: Update, context: CallbackContext) -> None:
                                   (submission.id, submission.problem_id, submission.score))
 
 
-@run_async
 def results(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(resources.RESULTS_TEXT)
 
 
-@run_async
 def broadcast(update: Update, context: CallbackContext) -> None:
     if not update.message.chat_id in ADMIN_IDS:
         return
@@ -125,7 +114,6 @@ def broadcast(update: Update, context: CallbackContext) -> None:
     update.message.reply_text(resources.BROADCAST_SUCCESS % len(users))
 
 
-@run_async
 def unicast(update: Update, context: CallbackContext) -> None:
     if not update.message.chat_id in ADMIN_IDS:
         return
