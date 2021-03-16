@@ -29,7 +29,7 @@ class EOlimpParser:
         if not response.ok:
             return
         json = response.json()
-        self.score = int(round(float(json['score']) * 100.0))
+        self.score = json['score']
         self.problem_id = json['problem']['id']
         self.username = json['user']['username'].casefold()
         self.compiler = json['compiler']['name']
